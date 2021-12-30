@@ -1,0 +1,9 @@
+GOTO main
+FUNC int func()
+PARA int a
+FUNC void main()
+func = 0
+PUSH func
+CALL func
+RET @Temp1
+func = @Temp1
