@@ -1,12 +1,34 @@
-# BUAA_2020_Compiler
-This is a project for course 'Compiler' 2022 BUAA.
+# BUAA 2020 Compiler Project
 
-I developed a MIPS compiler using C++ to translate simple C code into MIPS assembly language.
+[English](README.md) | [中文](README.zh-CN.md)
 
-The compiler included lexical analysis, parsing, error detection, intermediate code generation and code  optimization.
+A MIPS compiler implementation that translates simplified C code into MIPS assembly language. This project was developed as part of the Compiler course at Beihang University (BUAA) in 2022.
 
+## Overview
 
+This compiler implements the complete compilation process from source code to MIPS assembly, including:
 
-**中文版:**
+- Lexical Analysis (Scanner)
+- Syntax Analysis (Parser)
+- Error Detection & Handling
+- Intermediate Code Generation
+- Code Optimization
+- MIPS Assembly Generation
 
-2020编译课设，课下课上测试中没有bug，优化极少仅供参考
+## Features
+
+- Source Language: Simplified C
+- Target Platform: MIPS Architecture
+- Implementation Language: C++
+- Key Components:
+  - Token recognition and classification
+  - Recursive descent parsing
+  - Symbol table management
+  - Intermediate code (IR) generation
+  - Basic optimization techniques
+  - MIPS instruction selection and register allocation
+
+## Project Structure
+
+compiler/
+├── lex
