@@ -1,0 +1,84 @@
+<AddOperator> ::= +｜-         /*Test program needs to include both symbols*/
+<MulOperator> ::= *｜/         /*Test program needs to include both symbols*/
+<RelOperator> ::= <｜<=｜>｜>=｜!=｜==    /*Test program needs to include all 6 symbols*/
+<Letter> ::= _｜a｜...｜z｜A｜...｜Z   /*Test program needs to include underscore, lowercase and uppercase letters*/
+
+<Digit> ::= 0｜1｜...｜9                        /*Test program needs to include at least one digit*/
+<Character> ::= '<AddOperator>'｜'<MulOperator>'｜'<Letter>'｜'<Digit>'   /*Test program needs to include all 4 types of characters*/
+
+<String> ::= "｛ASCII characters with decimal codes 32,33,35-126｝" //String must contain at least one character
+                                                                   /*Test program needs at least one string, not necessary to cover all characters*/
+
+<Program> ::= [<ConstDeclaration>][<VarDeclaration>]{<FunctionDefinition>|<VoidFunctionDefinition>}<MainFunction>   /*Test program only needs cases with/without const declaration, with/without var declaration, with/without function definition*/
+
+<ConstDeclaration> ::= const<ConstDefinition>;{const<ConstDefinition>;}    /*Test program needs cases with one const statement and two or more const statements*/
+<ConstDefinition> ::= int<Identifier>=<Integer>{,<Identifier>=<Integer>}
+                   | char<Identifier>=<Character>{,<Identifier>=<Character>}   /*Test program needs both int and char type constants, cases with one and multiple constant definitions*/
+
+<UnsignedInteger> ::= <Digit>｛<Digit>｝  /*Test program needs single-digit and multi-digit integers*/
+<Integer> ::= [+|-]<UnsignedInteger>  /*Test program needs integers with and without +/- signs*/
+
+<Identifier> ::= <Letter>｛<Letter>|<Digit>｝  
+               //Identifiers and keywords are case-insensitive
+               /*Test program needs identifiers with single letter and with following letters/digits*/
+
+<DeclarationHeader> ::= int<Identifier> |char<Identifier>   /*Test program needs both int and char type declaration headers*/
+
+<Constant> ::= <Integer>|<Character>    /*Test program needs both integer and character constants*/
+
+<Statement> ::= <AssignmentStmt> | <ConditionStmt> | <LoopStmt> | <CaseStmt> | <ReturnStmt> | <ReadStmt> | <WriteStmt> | <Empty>   /*Test program needs to include all types of statements*/
+
+<AssignmentStmt> ::= <LVal> '=' <Expression>';'
+                   | <LVal> '=' 'getint''('')'';'   /*Test program needs to include both forms of assignment*/
+
+<ConditionStmt> ::= 'if' '(' <Condition> ')' <Statement> ['else' <Statement>]   /*Test program needs to include if statements with and without else*/
+
+<LoopStmt> ::= 'while' '(' <Condition> ')' <Statement> 
+             | 'for' '(' <Identifier> '=' <Expression>';'<Condition>';'<Identifier>'='<Identifier>('+' | '-')<Step>')'<Statement>     
+             /*Test program needs to include both while and for loops, for loops with both positive and negative steps*/
+
+<Step> ::= <UnsignedInteger>
+
+<CaseStmt> ::= 'switch' '(' <Expression> ')' '{' <CaseTable> <Default> '}'     /*Test program needs to include case statements*/
+
+<CaseTable> ::= <CaseSubStatement> {<CaseSubStatement>}   /*Test program needs cases with one and multiple case sub-statements*/
+
+<CaseSubStatement> ::= 'case' <Constant>':' <Statement>   /*Test program needs case sub-statements*/
+
+<Default> ::= 'default' ':' <Statement>   /*Test program needs default statements*/
+
+//In case statements, expressions after switch and constants after case can only be int or char type;
+//Each case sub-statement stops executing after completion, not continuing to following cases
+
+<FunctionCall> ::= <Identifier>'('<ParameterList>')'   /*Test program needs function calls with return values*/
+<VoidFunctionCall> ::= <Identifier>'('<ParameterList>')'   /*Test program needs void function calls*/
+
+//Function calls can only call previously defined functions, applies to both types
+<ParameterList> ::= <Expression>{','<Expression>}|<Empty>   
+                //Parameter expressions cannot be array names, but can be array elements
+                //Parameter evaluation order should match Clang 8.0.1 compiler results
+                /*Test program needs cases with no parameters, one parameter, and multiple parameters*/
+
+<StatementList> ::= {<Statement>} /*Test program needs statement lists with and without statements*/
+
+<ReadStmt> ::= 'scanf' '(' <Identifier> ')'
+               //Gets value from standard input for identifier, cannot be constant or array name
+               //For each scanf statement in generated PCODE or MIPS assembly, requires Enter key
+               //Input data in testin.txt should be one item per line
+               //Follow syscall instruction usage when generating MIPS assembly
+               /*Test program needs read statements*/
+
+<WriteStmt> ::= 'printf' '(' <String>',' <Expression> ')'
+              | 'printf' '(' <String> ')'
+              | 'printf' '(' <Expression>')'
+              //For printf with string and expression, outputs string then expression value with no space
+              //For char expressions output character, for int expressions output integer
+              //Strings output exactly as is (no escaping)
+              //Each printf statement outputs to a new line, treated as having \n at end
+              /*Test program needs all three forms of write statements*/
+
+<ReturnStmt> ::= 'return' ['(' <Expression> ')']
+              //Void functions can have no return or return with no value
+              //Functions with return values only need one return with value statement
+              /*Test program needs cases with and without return statements, and returns with and without expressions*/
+
